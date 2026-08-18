@@ -2,6 +2,8 @@
 # -*- coding: utf-8 -*-
 # PYTHON_ARGCOMPLETE_OK
 from operator import itemgetter
+import re
+import pytest
 
 
 class TupleMeta(type):
@@ -20,6 +22,17 @@ class Tuple(tuple, metaclass=TupleMeta):
 
 class Person(Tuple):
     _fields = ["name", "age", "salary"]
+
+
+def test_person():
+    bob = Person("Bob", 37, 12000)
+    assert (bob.name, bob.age, bob.salary) == ("Bob", 37, 12000)
+    assert str(bob) == "('Bob', 37, 12000)"
+
+
+def test_person_error():
+    with pytest.raises(TypeError, match=re.escape("gets exactly 3 arguments")):
+        Person("Bob", 37)
 
 
 if __name__ == "__main__":
