@@ -26,7 +26,10 @@ class Symbol:
             return NotImplemented
 
     def __repr__(self):
-        return f"{type(self).__name__[:1]}({self.name})"
+        return f"{type(self).__name__}({self.name})"
+
+    def __str__(self):
+        return f"{self.name}"
 
     @classmethod
     def masterpat(cls):
