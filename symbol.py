@@ -8,13 +8,25 @@ import re
 class Symbol:
     _instances = {}
 
-    def __new__(cls, name, pat):
+    def __new__(cls, name, pat=""):
         if name not in cls._instances:
+            assert pat != ""
             sym = cls._instances[name] = super().__new__(cls)
             sym.name = name
             sym.pat = pat
             # print(f"Initializing {cls.__name__}({name})")
         return cls._instances[name]
+
+    def __eq__(self, other) -> bool:
+        if isinstance(other, type(self)):
+            return self.name == other.name
+        elif isinstance(other, str):
+            return self.name == other
+        else:
+            return NotImplemented
+
+    def __repr__(self):
+        return f"{type(self).__name__[:1]}({self.name})"
 
     @classmethod
     def masterpat(cls):
@@ -56,12 +68,12 @@ class Token:
 
 
 def iter_tokens(sexpr: str, masterpat=Symbol.masterpat()) -> Iterator[Token]:
-    for tok in re.find_iter(masterpat, sexpr):
-        if tok.lastgroup == Symbol("WS"):
+    for match in re.finditer(masterpat, sexpr):
+        if Symbol(match.lastgroup) == "WS":
             continue
-        yield Token(Symbol(tok.lastgroup, tok.group(0)))
+        yield Token(Symbol(match.lastgroup), match.group(0))
 
 
 if __name__ == "__main__":
-    for tok in iter_tokens(""):
+    for tok in iter_tokens("2 + (3 * 4) + 5"):
         print(tok)
