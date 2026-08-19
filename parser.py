@@ -36,7 +36,6 @@ class Parser:
         pass
 
     def parse(self, sexpr) -> Node:
-        self._depth = 0
         self.tokens: Iterator[Token] = iter_tokens(sexpr)
         self.tok: Token = self._advance()
         return self.expr()
