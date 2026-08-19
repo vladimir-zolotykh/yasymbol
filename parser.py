@@ -22,8 +22,7 @@ def show(func):
     def wrapper(*args, **kwargs):
         self = args[0]
         depth = getattr(self, "_depth", 0)
-        print("    " * depth, f"{func.__name__}")
-        # print(f"{func.__name__}")
+        print("{}{:s}".format("    " * depth, func.__name__))
         setattr(self, "_depth", depth + 1)
         res = func(*args, **kwargs)
         setattr(self, "_depth", depth)
@@ -37,6 +36,7 @@ class Parser:
         pass
 
     def parse(self, sexpr) -> Node:
+        self._depth = 0
         self.tokens: Iterator[Token] = iter_tokens(sexpr)
         self.tok: Token = self._advance()
         return self.expr()
