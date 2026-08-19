@@ -26,19 +26,19 @@ class Parser:
     def term(self) -> Node:
         res = self.factor()
         while (op := self.tok) and op.sym in ("MUL", "DIV"):
-            self._consure()
+            self._consume()
             right = self.factor()
             res = Mul(res, right) if op == "MUL" else Div(res, right)
         return res
 
     def factor(self) -> Node:
         if self.tok.sym == "LPAREN":
-            self._consure()
+            self._consume()
             res = self.expr()
             self._expect("RPAREN")
         else:
             res = Num(self.tok.val)
-            self._consure
+            self._consume
         return res
 
     def _advance(self) -> Token:
@@ -52,3 +52,8 @@ class Parser:
         if self.tok.sym != expected:
             raise SyntaxError(f"{expected!r} expected, got {self.tok.sym!r}")
         self.tok = next(self.tokens, None)
+
+
+if __name__ == "__main__":
+    n: Node = Parser.parse("2 + (3 * 4) + 5")
+    print(n)
