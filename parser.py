@@ -2,8 +2,17 @@
 # -*- coding: utf-8 -*-
 # PYTHON_ARGCOMPLETE_OK
 from typing import Iterator
+import builtins
+import inspect
 from node import Node, Num, Plus, Minus, Mul, Div
 from symbol import Symbol, Token, iter_tokens
+
+
+def next(iterable: Iterator[Token], default: Token | None) -> Token | None:
+    res = builtins.next(iterable, default)
+    caller = inspect.currentframe().f_back
+    print(f"*** {caller.f_code.co_name}->next->{res}")
+    return res
 
 
 class Parser:
