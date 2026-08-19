@@ -84,6 +84,4 @@ class Parser:
 
 if __name__ == "__main__":
     n: Node = Parser().parse("2 + (3 * 4) + 5")
-    n: Node = Parser().parse("2")
-    n: Node = Parser().parse("2 + 3")
     print(n)
