@@ -2,33 +2,9 @@
 # -*- coding: utf-8 -*-
 # PYTHON_ARGCOMPLETE_OK
 from typing import Iterator
-import builtins
-from functools import wraps
 
-# import inspect
 from node import Node, Num, Plus, Minus, Mul, Div
 from symbol import Symbol, Token, iter_tokens
-
-
-def next(iterable: Iterator[Token], default: Token | None) -> Token | None:
-    res = builtins.next(iterable, default)
-    # caller = inspect.currentframe().f_back
-    # print(f"*** {caller.f_code.co_name}->next->{res}")
-    return res
-
-
-def show(func):
-    @wraps(func)
-    def wrapper(*args, **kwargs):
-        self = args[0]
-        depth = getattr(self, "_depth", 0)
-        print("{}{:s}".format("    " * depth, func.__name__))
-        setattr(self, "_depth", depth + 1)
-        res = func(*args, **kwargs)
-        setattr(self, "_depth", depth)
-        return res
-
-    return wrapper
 
 
 class Parser:
@@ -40,7 +16,6 @@ class Parser:
         self.tok: Token = self._advance()
         return self.expr()
 
-    @show
     def expr(self) -> Node:
         res = self.term()
         while (op := self.tok) and op.sym in ("PLUS", "MINUS"):
@@ -49,7 +24,6 @@ class Parser:
             res = Plus(res, right) if op == "PLUS" else Minus(res, right)
         return res
 
-    @show
     def term(self) -> Node:
         res = self.factor()
         while (op := self.tok) and op.sym in ("MUL", "DIV"):
@@ -58,7 +32,6 @@ class Parser:
             res = Mul(res, right) if op == "MUL" else Div(res, right)
         return res
 
-    @show
     def factor(self) -> Node:
         if self.tok.sym == "LPAREN":
             self._consume()
@@ -66,7 +39,7 @@ class Parser:
             self._expect("RPAREN")
         else:
             res = Num(self.tok.val)
-            self._consume
+            self._consume()
         return res
 
     def _advance(self) -> Token:
