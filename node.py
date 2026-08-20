@@ -43,6 +43,11 @@ class BinOp(Node):
         return f"{type(self).__name__}({self.left}, {self.right})"
 
 
+def make_binop(op: str, left, right) -> BinOp:
+    cls = {"+": Plus, "-": Minus, "*": Mul, "/": Div}[op]
+    return cls(left, right)
+
+
 class Plus(BinOp):
     pass
 

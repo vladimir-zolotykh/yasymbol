@@ -3,7 +3,7 @@
 # PYTHON_ARGCOMPLETE_OK
 from typing import Iterator
 
-from node import Node, Num, Plus, Minus, Mul, Div
+from node import Node, Num, make_binop
 from symbol import Symbol, Token, iter_tokens
 
 
@@ -20,16 +20,14 @@ class Parser:
         res = self.term()
         while (op := self.tok) and op.sym in ("PLUS", "MINUS"):
             self._consume()
-            right = self.term()
-            res = Plus(res, right) if op == "PLUS" else Minus(res, right)
+            res = make_binop(op.val, res, self.factor())
         return res
 
     def term(self) -> Node:
         res = self.factor()
         while (op := self.tok) and op.sym in ("MUL", "DIV"):
             self._consume()
-            right = self.factor()
-            res = Mul(res, right) if op == "MUL" else Div(res, right)
+            res = make_binop(op.val, res, self.factor())
         return res
 
     def factor(self) -> Node:
