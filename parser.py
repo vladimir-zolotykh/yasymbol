@@ -2,8 +2,8 @@
 # -*- coding: utf-8 -*-
 # PYTHON_ARGCOMPLETE_OK
 from typing import Iterator
-
-from node import Node, Num, make_binop
+import pytest
+from node import Node, Num, make_binop, Plus, Mul
 from symbol import Symbol, Token, iter_tokens
 
 
@@ -36,7 +36,7 @@ class Parser:
             res = self.expr()
             self._expect("RPAREN")
         else:
-            res = Num(self.tok.val)
+            res = Num(float(self.tok.val))
             self._consume()
         return res
 
@@ -51,6 +51,18 @@ class Parser:
         if self.tok.sym != expected:
             raise SyntaxError(f"{expected!r} expected, got {self.tok.sym!r}")
         self.tok = next(self.tokens, None)
+
+
+@pytest.mark.parametrize(
+    "sexpr, expected",
+    [
+        ("2 + 3", Plus(Num(2.0), Num(3.0))),
+        ("3 * 4", Mul(Num(3.0), Num(4.0))),
+        ("2 + (3 * 4) + 5", Plus(Plus(Num(2.0), Mul(Num(3.0), Num(4.0))), Num(5.0))),
+    ],
+)
+def test_parse(sexpr, expected):
+    assert Parser().parse(sexpr) == expected
 
 
 if __name__ == "__main__":

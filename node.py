@@ -10,6 +10,7 @@ class Node:
 
 class Num(Node):
     def __init__(self, val: float):
+        assert isinstance(val, float)
         super().__init__(val)
 
     def __eq__(self, other) -> bool:
@@ -29,13 +30,9 @@ class BinOp(Node):
         self.left = left
         self.right = right
 
-    def __eq__(self, other) -> bool:
-        if isinstance(other, type(self)):
-            return (
-                super().__eq__(other)
-                and self.left == other.left  # noqa: W503
-                and self.right == other.right  # noqa: W503
-            )
+    def __eq__(self, o) -> bool:
+        if isinstance(o, type(self)):
+            return self.left == o.left and self.right == o.right
         else:
             return NotImplemented
 
