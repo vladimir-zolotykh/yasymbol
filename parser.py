@@ -3,7 +3,7 @@
 # PYTHON_ARGCOMPLETE_OK
 from typing import Iterator
 import pytest
-from node import Node, Num, make_binop, Plus, Mul
+from node import Node, Num, make_binop, Plus, Minus, Mul, Div
 from symbol import Symbol, Token, iter_tokens
 
 
@@ -59,6 +59,9 @@ class Parser:
         ("2 + 3", Plus(Num(2.0), Num(3.0))),
         ("3 * 4", Mul(Num(3.0), Num(4.0))),
         ("2 + (3 * 4) + 5", Plus(Plus(Num(2.0), Mul(Num(3.0), Num(4.0))), Num(5.0))),
+        ("9 / 3", Div(Num(9.0), Num(3.0))),
+        ("5 + (9 / 3)", Plus(Num(5.0), Div(Num(9.0), Num(3.0)))),
+        ("5 + (9 / 3) - 2", Minus(Plus(Num(5.0), Div(Num(9.0), Num(3.0))), Num(2.0))),
     ],
 )
 def test_parse(sexpr, expected):
