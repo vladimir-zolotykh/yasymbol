@@ -34,6 +34,14 @@ class BinOp(Node):
         self.left = left
         self.right = right
 
+    def __init_subclass__(cls, **kwargs):
+        super().__init_subclass__(**kwargs)
+        BinOp.node_map = BinOp.get_node_map()
+
+    @classmethod
+    def get_node_map(cls):
+        return {sub: sub.__map__ for sub in cls.__subclasses__()}
+
     def eval(self) -> float:
         op = {"Plus": "add", "Minus": "sub", "Mul": "mul", "Div": "truediv"}[
             type(self).__name__
@@ -56,16 +64,16 @@ def make_binop(op: str, left, right) -> BinOp:
 
 
 class Plus(BinOp):
-    pass
+    __map__ = ("+", "add")
 
 
 class Minus(BinOp):
-    pass
+    __map__ = ("-", "sub")
 
 
 class Mul(BinOp):
-    pass
+    __map__ = ("*", "mul")
 
 
 class Div(BinOp):
-    pass
+    __map__ = ("/", "truediv")
