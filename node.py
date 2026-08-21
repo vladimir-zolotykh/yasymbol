@@ -29,8 +29,7 @@ class Num(Node):
 
 class BinOp(Node):
     def __init__(self, left: Node, right: Node):
-        # op = {"Plus": "+", "Minus": "-", "Mul": "*", "Div": "/"}[type(self).__name__]
-        super().__init__(None)  # op)
+        super().__init__(None)
         self.left = left
         self.right = right
 
@@ -43,9 +42,7 @@ class BinOp(Node):
         return {sub: sub.__map__ for sub in cls.__subclasses__()}
 
     def eval(self) -> float:
-        op = {"Plus": "add", "Minus": "sub", "Mul": "mul", "Div": "truediv"}[
-            type(self).__name__
-        ]
+        op = BinOp.node_map[type(self)][1]
         return getattr(operator, op)(self.left.eval(), self.right.eval())
 
     def __eq__(self, o) -> bool:
@@ -59,8 +56,9 @@ class BinOp(Node):
 
 
 def make_binop(op: str, left, right) -> BinOp:
-    cls = {"+": Plus, "-": Minus, "*": Mul, "/": Div}[op]
-    return cls(left, right)
+    for cls, tup in BinOp.node_map.items():
+        if tup[0] == op:
+            return cls(left, right)
 
 
 class Plus(BinOp):
