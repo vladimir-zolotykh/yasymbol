@@ -29,8 +29,8 @@ class Num(Node):
 
 class BinOp(Node):
     def __init__(self, left: Node, right: Node):
-        op = {"Plus": "+", "Minus": "-", "Mul": "*", "Div": "/"}[type(self).__name__]
-        super().__init__(op)
+        # op = {"Plus": "+", "Minus": "-", "Mul": "*", "Div": "/"}[type(self).__name__]
+        super().__init__(None)  # op)
         self.left = left
         self.right = right
 
