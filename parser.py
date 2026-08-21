@@ -53,6 +53,12 @@ class Parser:
         self.tok = next(self.tokens, None)
 
 
+def test_eval():
+    sexpr = "2 + (3 * 4) + 5"
+    n: Node = Parser().parse(sexpr)
+    assert n.eval() == eval(sexpr)
+
+
 @pytest.mark.parametrize(
     "sexpr, expected",
     [

@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 # PYTHON_ARGCOMPLETE_OK
+import operator
 
 
 class Node:
@@ -12,6 +13,9 @@ class Num(Node):
     def __init__(self, val: float):
         assert isinstance(val, float)
         super().__init__(val)
+
+    def eval(self) -> float:
+        return self.val
 
     def __eq__(self, other) -> bool:
         if isinstance(other, type(self)):
@@ -29,6 +33,12 @@ class BinOp(Node):
         super().__init__(op)
         self.left = left
         self.right = right
+
+    def eval(self) -> float:
+        op = {"Plus": "add", "Minus": "sub", "Mul": "mul", "Div": "truediv"}[
+            type(self).__name__
+        ]
+        return getattr(operator, op)(self.left.eval(), self.right.eval())
 
     def __eq__(self, o) -> bool:
         if isinstance(o, type(self)):
