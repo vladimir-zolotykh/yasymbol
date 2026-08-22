@@ -28,6 +28,8 @@ class Num(Node):
 
 
 class BinOp(Node):
+    node_map = {}
+
     def __init__(self, left: Node, right: Node):
         super().__init__(None)
         self.left = left
@@ -37,9 +39,9 @@ class BinOp(Node):
         super().__init_subclass__(**kwargs)
         BinOp.node_map = BinOp.get_node_map()
 
-    @classmethod
-    def get_node_map(cls):
-        return {sub: sub.__map__ for sub in cls.__subclasses__()}
+    @staticmethod
+    def get_node_map():
+        return {sub: sub.__map__ for sub in BinOp.__subclasses__()}
 
     def eval(self) -> float:
         op = BinOp.node_map[type(self)][1]
