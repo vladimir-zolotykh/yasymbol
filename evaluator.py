@@ -25,6 +25,16 @@ class Evaluator2:
         return n.eval()
 
 
+def test_evaluator1():
+    n: Node = Parser().parse("2 + (3 * 4) + 5")
+    assert Evaluator1().eval(n) == 19.0
+
+
+def test_evaluator2():
+    n: Node = Parser().parse("2 + (3 * 4) + 5")
+    assert Evaluator2().eval(n) == 19.0
+
+
 if __name__ == "__main__":
     print(Evaluator1().eval(Parser().parse("2 + (3 * 4) + 5")))
     print(Evaluator2().eval(Parser().parse("2 + (3 * 4) + 5")))
