@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 # PYTHON_ARGCOMPLETE_OK
+from typing import Callable
 from types import MethodType
 from inspect import signature, _empty
 from node import Node, Num, Plus, Minus, Mul, Div
@@ -9,9 +10,7 @@ from parser import Parser
 
 class MultiMethod:
     def __init__(self) -> None:
-        self.methods = {}
-        # self._name = name
-        # self.register(func)
+        self.methods: dict[tuple[type, ...], Callable] = {}
 
     def __get__(self, instance, owner):
         if instance is None:
