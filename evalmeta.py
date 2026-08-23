@@ -2,16 +2,16 @@
 # -*- coding: utf-8 -*-
 # PYTHON_ARGCOMPLETE_OK
 from types import MethodType
-from instance import signature, _empty
+from inspect import signature, _empty
 from node import Node, Num, Plus, Minus, Mul, Div
 from parser import Parser
 
 
-class Method:
-    def __init__(self, name, func) -> None:
+class MultiMethod:
+    def __init__(self) -> None:
         self.methods = {}
-        self._name = name
-        self.register(func)
+        # self._name = name
+        # self.register(func)
 
     def __get__(self, instance, owner):
         if instance is None:
@@ -28,11 +28,11 @@ class Method:
                 raise TypeError(f"{name!r} all parms must have annotation")
             if parm.default is not _empty:
                 self.methods[typ] = func
-            typ = typ + (typ, parm.annotation)
+            typ = typ + (parm.annotation,)
         self.methods[typ] = func
 
     def __call__(self, *args, **kwargs):
-        typ = (type(a) for a in args[1:])
+        typ = tuple(type(a) for a in args[1:])
         return self.methods[typ](*args, **kwargs)
 
 
@@ -41,13 +41,14 @@ class MultiDict(dict):
         if key[:2] == "__" and key[-2:] == "__":
             super().__setitem__(key, val)
             return
-        mm = self.setdefault(key, Method())
+        mm = self.setdefault(key, MultiMethod())
         mm.register(val)
         super().__setitem__(key, mm)
 
 
 class EvalMeta(type):
-    def __prepare__(mcls, cls, bases, ns):
+    @classmethod
+    def __prepare__(mcls, cls, bases, /, **ns):
         return MultiDict()
 
 

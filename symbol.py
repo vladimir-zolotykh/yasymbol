@@ -7,6 +7,8 @@ import re
 
 class Symbol:
     _instances = {}
+    name: str
+    pat: str
 
     def __new__(cls, name, pat=""):
         if name not in cls._instances:
