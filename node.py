@@ -17,6 +17,9 @@ class Num(Node):
     def eval(self) -> float:
         return self.val
 
+    def __float__(self) -> float:
+        return float(self.val)
+
     def __eq__(self, other) -> bool:
         if isinstance(other, type(self)):
             return self.val == other.val
@@ -41,6 +44,9 @@ class BinOp(Node):
     def eval(self) -> float:
         op = BinOp.node_map[type(self)][1]
         return getattr(operator, op)(self.left.eval(), self.right.eval())
+
+    def __float__(self) -> float:
+        return float(self.eval())
 
     def __eq__(self, o) -> bool:
         if isinstance(o, type(self)):
