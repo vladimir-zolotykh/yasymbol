@@ -4,7 +4,7 @@
 from typing import Callable
 from types import MethodType
 from inspect import signature, _empty
-from node import Node, Num, Plus, Minus, Mul, Div
+from node import Node, Num, BinOp, Plus, Minus, Mul, Div
 from parser import Parser
 
 
@@ -32,7 +32,12 @@ class MultiMethod:
 
     def __call__(self, *args, **kwargs):
         typ = tuple(type(a) for a in args[1:])
-        return self.methods[typ](*args, **kwargs)
+        try:
+            return self.methods[typ](*args, **kwargs)
+        except KeyError:
+            for ktyp, func in self.methods.items():
+                if issubclass(typ[0], ktyp[0]):  # issubclass(Plus, BinOp)
+                    return func(*args, **kwargs)
 
 
 class MultiDict(dict):
@@ -51,7 +56,7 @@ class EvalMeta(type):
         return MultiDict()
 
 
-class Evaluator(metaclass=EvalMeta):
+class Evaluator1(metaclass=EvalMeta):
     def eval(self, n: Num) -> float:
         return float(n.val)
 
@@ -68,7 +73,16 @@ class Evaluator(metaclass=EvalMeta):
         return self.eval(n.left) / self.eval(n.right)
 
 
+class Evaluator2(metaclass=EvalMeta):
+    def eval(self, n: Num) -> float:
+        return float(n)
+
+    def eval(self, n: BinOp) -> float:  # noqa: F811
+        return float(n)
+
+
 if __name__ == "__main__":
     sexpr = "2 + (3 * 4) + 5"
     n: Node = Parser().parse(sexpr)
-    assert Evaluator().eval(n) == eval(sexpr)
+    assert Evaluator1().eval(n) == eval(sexpr)
+    assert Evaluator2().eval(n) == eval(sexpr)
