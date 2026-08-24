@@ -27,9 +27,12 @@ class MultiMethod:
                 raise TypeError(f"{name!r} all parms must have annotation")
             if parm.default is not _empty:
                 self.methods[typ] = func
-            typ = typ + (parm.annotation,)
-            for utyp in get_args(parm.annotation):
-                typ = typ + (utyp,)
+            if args := get_args(parm.annotation):
+                for utyp in args:
+                    self.methods[typ + (utyp,)] = func
+            else:
+                typ = typ + (parm.annotation,)
+
         self.methods[typ] = func
 
     def __call__(self, *args, **kwargs):
