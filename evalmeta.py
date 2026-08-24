@@ -29,8 +29,7 @@ class MultiMethod:
                 self.methods[typ] = func
             typ = typ + (parm.annotation,)
             for utyp in get_args(parm.annotation):
-                # typ = typ + (utyp,)
-                print(f"{utyp = }")
+                typ = typ + (utyp,)
         self.methods[typ] = func
 
     def __call__(self, *args, **kwargs):
