@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 # PYTHON_ARGCOMPLETE_OK
-from typing import Callable
+from typing import Callable, get_args
 from types import MethodType
 from inspect import signature, _empty
 from node import Node, Num, BinOp, Plus, Minus, Mul, Div
@@ -28,6 +28,9 @@ class MultiMethod:
             if parm.default is not _empty:
                 self.methods[typ] = func
             typ = typ + (parm.annotation,)
+            for utyp in get_args(parm.annotation):
+                # typ = typ + (utyp,)
+                print(f"{utyp = }")
         self.methods[typ] = func
 
     def __call__(self, *args, **kwargs):
