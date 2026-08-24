@@ -91,9 +91,15 @@ class Evaluator3(metaclass=EvalMeta):
         return float(n)
 
 
+class Evaluator4(metaclass=EvalMeta):
+    def eval(self, n: Num | Plus | Minus | Mul | Div) -> float:
+        return float(n)
+
+
 if __name__ == "__main__":
     sexpr = "2 + (3 * 4) + 5"
     n: Node = Parser().parse(sexpr)
     assert Evaluator1().eval(n) == eval(sexpr)
     assert Evaluator2().eval(n) == eval(sexpr)
     assert Evaluator3().eval(n) == eval(sexpr)
+    assert Evaluator4().eval(n) == eval(sexpr)
