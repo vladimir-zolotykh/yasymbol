@@ -10,8 +10,7 @@ def parmdispatch(func):
 
     def register(*values):
         def decorate(func):
-            for val in values:
-                dir[val] = func
+            dir.update(dict.fromkeys(values, func))
             return func
 
         return decorate
