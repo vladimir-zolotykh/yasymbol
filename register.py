@@ -1,0 +1,37 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+# PYTHON_ARGCOMPLETE_OK
+from typing import Callable
+from functools import wraps
+
+
+def parmdispatch(func):
+    dir: dict[int, Callable] = {}
+
+    def register(*values):
+        for val in values:
+            dir[val] = func
+        return func
+
+    @wraps(func)
+    def wrapper(num):
+        res = dir[num](num)
+        return res
+
+    wrapper.register = register
+    return wrapper
+
+
+@parmdispatch
+def iswhat(num):
+    print(f"{num} is something else")
+
+
+@iswhat.register(2, 4, 6)
+def iseven(num):
+    print(f"{num} is even")
+
+
+@iswhat.register(1, 5)
+def isodd(num):
+    print(f"{num} is odd")
