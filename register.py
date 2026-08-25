@@ -9,13 +9,19 @@ def parmdispatch(func):
     dir: dict[int, Callable] = {}
 
     def register(*values):
-        for val in values:
-            dir[val] = func
+        def decorate(func):
+            for val in values:
+                dir[val] = func
+            return decorate
+
         return func
 
     @wraps(func)
     def wrapper(num):
-        res = dir[num](num)
+        try:
+            res = dir[num](num)
+        except KeyError:
+            res = iswhat(num)
         return res
 
     wrapper.register = register
@@ -28,12 +34,12 @@ def iswhat(num):
 
 
 @iswhat.register(2, 4, 6)
-def iseven(num):
+def _(num):
     print(f"{num} is even")
 
 
 @iswhat.register(1, 5)
-def isodd(num):
+def _(num):
     print(f"{num} is odd")
 
 
