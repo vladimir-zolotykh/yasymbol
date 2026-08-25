@@ -6,11 +6,11 @@ from functools import wraps
 
 
 def parmdispatch(func):
-    dir: dict[int, Callable] = {}
+    dispatch: dict[int, Callable] = {}
 
     def register(*values):
         def decorate(func):
-            dir.update(dict.fromkeys(values, func))
+            dispatch.update(dict.fromkeys(values, func))
             return func
 
         return decorate
@@ -18,7 +18,7 @@ def parmdispatch(func):
     @wraps(func)
     def wrapper(num):
         try:
-            res = dir[num](num)
+            res = dispatch[num](num)
         except KeyError:
             res = f"{num} is something else"
         return res
