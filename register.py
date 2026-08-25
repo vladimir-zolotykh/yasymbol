@@ -12,16 +12,16 @@ def parmdispatch(func):
         def decorate(func):
             for val in values:
                 dir[val] = func
-            return decorate
+            return func
 
-        return func
+        return decorate
 
     @wraps(func)
     def wrapper(num):
         try:
             res = dir[num](num)
         except KeyError:
-            res = iswhat(num)
+            res = f"{num} is something else"
         return res
 
     wrapper.register = register
@@ -30,20 +30,20 @@ def parmdispatch(func):
 
 @parmdispatch
 def iswhat(num):
-    print(f"{num} is something else")
+    return f"{num} is something else"
 
 
 @iswhat.register(2, 4, 6)
 def _(num):
-    print(f"{num} is even")
+    return f"{num} is even"
 
 
 @iswhat.register(1, 5)
 def _(num):
-    print(f"{num} is odd")
+    return f"{num} is odd"
 
 
 if __name__ == "__main__":
-    iswhat(1)
-    iswhat(4)
-    iswhat(100)
+    print(iswhat(1))
+    print(iswhat(4))
+    print(iswhat(100))
