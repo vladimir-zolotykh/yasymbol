@@ -35,3 +35,9 @@ def iseven(num):
 @iswhat.register(1, 5)
 def isodd(num):
     print(f"{num} is odd")
+
+
+if __name__ == "__main__":
+    iswhat(1)
+    iswhat(4)
+    iswhat(100)
